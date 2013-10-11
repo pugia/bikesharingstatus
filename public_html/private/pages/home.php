@@ -3,6 +3,8 @@
 $city = new city($db);
 $city->loadIssues(1);
 
+unset($_SESSION['matricola']);
+
 ?>
 
 <!DOCTYPE html>
@@ -66,26 +68,29 @@ $city->loadIssues(1);
         <section>
         	<article class="tab active" data-tab="consulta" id="consulta">
         		<form method="post">
-	        		<h2>Consulta</h2>
-	        		<p class="input">
-	        			<label for="c_matricola">Matricola</label>
-	        			<input type="tel" name="c_matricola" id="c_matricola" placeholder="Matricola" value="<?php echo (isset($_SESSION['matricola'])) ? $_SESSION['matricola'] : ''; ?>" />
-	        		</p>
-	        		<p class="button">
-	        			<button type="submit">Consulta</button>
-	        			<button class="taken">Presa</button>
-	        		</p>
+	        		<span class="start">Prendi la bici</span>
+	        		
+	        		<div class="form">
+		        		<p class="input">
+		        			<label for="c_matricola">Matricola</label>
+		        			<input type="tel" name="c_matricola" id="c_matricola" placeholder="Matricola" value="<?php echo (isset($_SESSION['matricola'])) ? $_SESSION['matricola'] : ''; ?>" />
+		        		</p>
+		        		<p class="button">
+		        			<button type="submit">Consulta</button>
+		        			<button class="taken">Presa</button>
+		        		</p>
+	        		</div>
 	        		
 	        		<input type="hidden" name="action" value="check" />
 	        		
         		</form>
         		
         		<div id="responso">
-        			<h3>TIMER</h3>
-        			
+        			<h3>STATO</h3>
+        			<p class="clearfix"></p>
 							<script type="text/html" id="issue-date-block">
 								<div class="data">
-									<h4 class="fromDate"><%= data %></h4>
+									<h4 class="fromDate"><%= data_readable %></h4>
 									<div class="issues">
 									<% _.each(problems, function(i) { %>
 										<div class="issue issue_<%= i.id_issue %>">
@@ -101,7 +106,6 @@ $city->loadIssues(1);
         	</article>
         	
         	<article class="tab" data-tab="segnala" id="segnala">
-        		<h2>Segnala</h2>
 						<form method="post">
 
 	        		<p class="input">
@@ -159,7 +163,10 @@ $city->loadIssues(1);
 								$(this).addClass('active');
 								
 								$('article.tab:not([data-tab="'+$(this).attr('rel')+'"])').hide();
-								$('article.tab[data-tab="'+$(this).attr('rel')+'"]').show();
+								$('article.tab[data-tab="'+$(this).attr('rel')+'"]')
+									.show()
+									.find('p.input input')
+									.focus();
 								
 							});
 							
@@ -174,23 +181,29 @@ $city->loadIssues(1);
 						
 						
 						base
-							.find('#responso, button.taken')
+							.find('#responso, button.taken, div.form')
 							.hide();
 						base
 							.find('#responso > div.data')
 							.remove();						
-
+						
 						base
-							.find('button[type="submit"]')
+							.find('span.start')
+							.removeClass('timer')
 							.unbind('click')
 							.bind('click', function(e) {
 								e.preventDefault();
-
+								
 								base
-									.find('#responso')
-									.show()
-									.find('h3')
+									.find('span.start')
+									.addClass('timer')
 									.text(second2timer(counter));
+									
+								base
+									.find('div.form')
+									.show()
+									.find('input#c_matricola')
+									.focus();
 								
 								// timer
 								var timer = counter;
@@ -199,20 +212,27 @@ $city->loadIssues(1);
 									timer = timer-1;
 									
 									base
-										.find('#responso')
-										.show()
-										.find('h3')
+										.find('span.start')
 										.text(second2timer(timer));
 									if (timer == 0) {
 										clearInterval(intervallo);
 										alert('Tempo scaduto');
 										$('#s_matricola, #c_matricola').val('');
+										init_consulta();
 									}
 									
 								}, 1000);
 								
+							});
+						
+						base
+							.find('button[type="submit"]')
+							.unbind('click')
+							.bind('click', function(e) {
+								e.preventDefault();
+								
 								base
-									.find('button.taken')
+									.find('button.taken, #responso')
 									.show();
 								
 								var matricola = base.find('input[name="c_matricola"]').val();
@@ -224,12 +244,14 @@ $city->loadIssues(1);
 									var tpl_data = _.template($('#issue-date-block').html());
 									if (data.issues) {
 										_.each(data.issues, function(a) {
+											console.log(a);
 											base
 												.find('#responso')
-												.find('h3')
-												.after(tpl_data(a));
+												.find('p.clearfix')
+												.before(tpl_data(a));
 											
 										});
+																				
 									}
 								})
 							})
@@ -247,11 +269,13 @@ $city->loadIssues(1);
 					}
 					
 					function init_segnala() {
-						var base = $('article#consulta');
+						var base = $('article#segnala');
 						base
 							.find('div.problemi')
+							.hide()
 							.find('div.issue')
-							.each(function(issue) {
+							.each(function() {
+								var issue = $(this);
 								var note = issue.find('p.note');
 								note.hide();
 								issue
@@ -260,6 +284,43 @@ $city->loadIssues(1);
 										note.toggle($(this).is(':checked'));
 									})
 							})
+							
+						base
+							.find('p.buttons button.problems')
+							.unbind('click')
+							.bind('click', function(e) {
+								e.preventDefault();
+								
+								base
+									.find('div.problemi')
+									.show();
+									
+								base
+									.find('input[name="status"]')
+									.val('0');
+																	
+							});
+
+						base
+							.find('p.buttons button.ok')
+							.unbind('click')
+							.bind('click', function(e) {
+								e.preventDefault();
+								
+								base
+									.find('div.problemi')
+									.hide();
+									
+								base
+									.find('input[name="status"]')
+									.val('0');
+									
+								base
+									.find('form')
+									.submit();
+																	
+							});
+
 					}
 					
 					function zerofill(numero, cifre) {

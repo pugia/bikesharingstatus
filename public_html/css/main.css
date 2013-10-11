@@ -65,14 +65,99 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+ul.tabs {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
 ul.tabs li {
-	background: #f20;
+	width: 50%;
+	background: #eee;
+	margin: 0;
+	padding: 0;
+	float: left;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	font-weight: normal;
+	color: #aaa;
 }
 
 ul.tabs li.active {
-	background: #2f0;
+	background: #f20;
+	color: #fff;
+	font-weight: bold;
 }
 
+section {
+	clear: both;
+	border-top: 2px solid #f20;
+}
+
+p.input {
+	margin: 0;
+}
+
+p.input label {
+	display: none;
+}
+
+p.input input {
+	width: 98%;
+	margin: 1% 1% 0 1%;
+	padding: 5px 0;
+	font-size: 20px;
+	font-family: "Courier New", "Courier", monospace;
+	text-align: center;
+	background: #eee;
+	border: none;
+}
+
+#consulta span.start {
+	display: block;
+	height: 60px;
+	line-height: 60px;
+	font-size: 20px;
+	color: #fff;
+	text-align: center;
+	background: #333;
+	width: 98%;
+	margin: 1%;
+}
+
+#consulta span.start.timer {
+	font-family: "Courier New", "Courier", monospace;
+	font-size: 50px;
+	width: 100%;
+	margin: 0;
+	padding: 1% 0;
+}
+
+
+#segnala p.buttons {
+	clear: both;
+	margin: 0;
+}
+
+#segnala p.buttons button {
+	width: 48%;
+	margin: 1%;
+	float: left;
+	border: none;
+	height: 40px;
+	line-height: 40px;
+}
+
+#segnala p.buttons button.ok {
+	background: #37cc5a;
+	color: #fff;
+}
+
+#segnala p.buttons button.problems {
+	background: #dd2e2e;
+	color: #fff;
+}
 
 
 

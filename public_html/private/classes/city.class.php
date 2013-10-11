@@ -91,12 +91,12 @@ class City {
 		
 		$out = array();
 		while ($i = $res->fetch_assoc()) {
-			$data = date('Ymd', strtotime($i['date']));
+			$data = date('Y-m-d G:i:00', strtotime($i['date']));
 			$out[$data][] = $i;
 		}
 		$output = array();
 		foreach ($out as $data => $issues) {
-			$output[] = array('data' => $data, 'problems' => $issues);
+			$output[] = array('data' => $data, 'data_readable' => $this->contextualTime(strtotime($data)), 'problems' => $issues);
 		}
 
 		return $output;
@@ -113,6 +113,30 @@ class City {
 		
 		$data = $res->fetch_assoc();
 		return $data['status'];
+	}
+	
+	private function contextualTime($small_ts, $large_ts=false) {
+	  if(!$large_ts) $large_ts = time();
+	  $n = $large_ts - $small_ts;
+/*
+	  if($n <= 1) return _('adesso'); // meno di un secondo fa
+	  if($n < (60)) return $n . _('secondi').' '._('fa');
+*/
+	  if($n < (60*60)) { $minutes = round($n/60); return _('circa'). ' ' . $minutes . ' ' . ($minutes > 1 ? _('minuti') : _('minuto')) . ' '. _('fa'); }
+	  if($n < (60*60*16)) { $hours = round($n/(60*60)); return _('circa'). ' ' . $hours . ' ' . ($hours > 1 ? _('ore') : _('ora')) . ' '. _('fa'); }
+	  if($n < (time() - strtotime('yesterday'))) return 'ieri';
+	  if($n < (60*60*24)) { $hours = round($n/(60*60)); return _('circa'). ' ' . $hours . ' ' . ($hours > 1 ? _('ore') : _('ora')) . ' '. _('fa'); }
+	  if($n < (60*60*24*6.5)) return _('circa'). ' ' . round($n/(60*60*24)) . _('giorni').' '.'fa';
+	  if($n < (time() - strtotime('last week'))) return _('settimana scorsa');
+	  if(round($n/(60*60*24*7))  == 1) return _('circa una settimana fa');
+	  if($n < (60*60*24*7*3.5)) return _('circa'). ' ' . round($n/(60*60*24*7)) . _('settimane').' '._('fa');
+	  if($n < (time() - strtotime('last month'))) return _('il mese scorso');
+	  if(round($n/(60*60*24*7*4))  == 1) return _('circa un mese fa');
+	  if($n < (60*60*24*7*4*11.5)) return _('circa'). ' ' . round($n/(60*60*24*7*4)) . _('mesi').' '._('fa');
+	  if($n < (time() - strtotime('last year'))) return _("l\'anno scorso");
+	  if(round($n/(60*60*24*7*52)) == 1) return _('circa un anno fa');
+	  if($n >= (60*60*24*7*4*12)) return _('circa'). ' ' . round($n/(60*60*24*7*52)) . _('anni').' '._('fa'); 
+	  return false;
 	}
 	
 }
