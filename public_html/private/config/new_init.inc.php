@@ -22,8 +22,11 @@ define('SESSIONTIME', 30);					// giorni durata cookie
 $_PAGE = array_shift($_VARS);
 
 // variabili di connessione
-include_once(dirname(__FILE__).'/../classes/autoload.php');
 include_once(dirname(__FILE__).'/new_db.inc.php');
+include_once(dirname(__FILE__).'/../classes/dbman.class.php');
+include_once(dirname(__FILE__).'/../classes/issue.class.php');
+include_once(dirname(__FILE__).'/../classes/tools.class.php');
+include_once(dirname(__FILE__).'/../classes/city.class.php');
 
 // inizializzo il database
 $db = new dbman(DBHOST, DBUSER, DBPASS, DBNAME);

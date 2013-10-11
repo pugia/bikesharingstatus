@@ -40,25 +40,17 @@ if ($domain_part[0] == 'stage') {
 }
 */
 
-/*
-if ($domain_part[1] = 'bikesharingstatus') {
-
-	ini_set('session.cookie_domain', '.bikesharingstatus.com');
+if ($domain_part[1] == 'bikesharingstatus' && $domain_part[2] == 'com') {
 		
-	define('DBHOST', 'localhost');
-	define('DBUSER', 'root');
-	define('DBPASS', 'ViaSile41');
-	define('DBNAME', 'social');	
+	define('DBHOST', 'sql.bikesharingstatus.com');
+	define('DBUSER', 'bikeshar59028');
+	define('DBPASS', 'bike23347');
+	define('DBNAME', 'bikeshar59028');	
 	define('DOMAIN', 'bikesharingstatus.com');
-
-	define('MC_HOST', 'localhost');
-	define('MC_PORT', '11211');
-	define('MC_EXPIRE', '600');
 	
 	$debug = 0;
 	
 }
-*/
 
 if (isset($_GET['debug'])) $debug = 1;
 

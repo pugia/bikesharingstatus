@@ -50,6 +50,14 @@ $city->loadIssues(1);
         
         <h1>BIKEMI STATUS</h1>
         
+        <?php if (isset($_SESSION['message'])) { ?>
+        <div class="message">
+        	<p><?php echo $_SESSION['message']; ?></p>
+        </div>
+        <?php 
+        unset($_SESSION['message']);
+        } ?>
+        
         <ul class="tabs">
         	<li class="tab consulta active" rel="consulta"><span>Consulta</span></li>
         	<li class="tab segnala" rel="segnala"><span>Segnala</span></li>
@@ -65,6 +73,7 @@ $city->loadIssues(1);
 	        		</p>
 	        		<p class="button">
 	        			<button type="submit">Consulta</button>
+	        			<button class="taken">Presa</button>
 	        		</p>
 	        		
 	        		<input type="hidden" name="action" value="check" />
@@ -73,23 +82,20 @@ $city->loadIssues(1);
         		
         		<div id="responso">
         			<h3>TIMER</h3>
-        			<div class="issues">
-								
-								<script type="text/html" id="issue-date-block">
-									<div class="data">
-										<h4 class="fromDate"><%= data %></h4>
-										<div class="issues">
-										<% _.each(problems, function(i) { %>
-											<div class="issue issue_<%= i.id_issue %>">
-												<h4 class="name"><%= i.name %></h4>
-												<p class="note"><%= i.note %></p>
-											</div>
-										<% }); %>
+        			
+							<script type="text/html" id="issue-date-block">
+								<div class="data">
+									<h4 class="fromDate"><%= data %></h4>
+									<div class="issues">
+									<% _.each(problems, function(i) { %>
+										<div class="issue issue_<%= i.id_issue %>">
+											<h4 class="name"><%= i.name %></h4>
+											<p class="note"><%= i.note %></p>
 										</div>
+									<% }); %>
 									</div>
-								</script>
-
-        			</div>
+								</div>
+							</script>
         		</div>
         		
         	</article>
@@ -163,13 +169,17 @@ $city->loadIssues(1);
 					
 					function init_consulta() {
 						var base = $('article#consulta');
-						var counter = 70;
+						var counter = 60;
 						var intervallo = null;
 						
 						
 						base
-							.find('#responso')
-							.hide();							
+							.find('#responso, button.taken')
+							.hide();
+						base
+							.find('#responso > div.data')
+							.remove();						
+
 						base
 							.find('button[type="submit"]')
 							.unbind('click')
@@ -193,10 +203,19 @@ $city->loadIssues(1);
 										.show()
 										.find('h3')
 										.text(second2timer(timer));
+									if (timer == 0) {
+										clearInterval(intervallo);
+										alert('Tempo scaduto');
+									}
 									
 								}, 1000);
 								
+								base
+									.find('button.taken')
+									.show();
+								
 								var matricola = base.find('input[name="c_matricola"]').val();
+								$('#s_matricola').val(matricola);
 								$.get('/', {
 									'action': 'check',
 									'matricola': matricola
@@ -206,13 +225,24 @@ $city->loadIssues(1);
 										_.each(data.issues, function(a) {
 											base
 												.find('#responso')
-												.first('div.issues')
-												.append(tpl_data(a));
+												.find('h3')
+												.after(tpl_data(a));
 											
 										});
 									}
 								})
 							})
+							
+						// presa
+						base
+							.find('button.taken')
+							.unbind('click')
+							.bind('click', function(e) {
+								e.preventDefault();
+								clearInterval(intervallo);
+								$('ul.tabs li.segnala').click();
+								init_consulta();
+						});
 					}
 					
 					function init_segnala() {

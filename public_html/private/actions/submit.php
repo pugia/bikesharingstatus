@@ -14,5 +14,7 @@ $city->setBikeStatus($id_bike, (bool)$_POST['status']);
 
 unset($_SESSION['matricola']);
 
+$_SESSION['message'] = 'Grazie per la segnalazione';
+
 header("Location: /");
 exit();

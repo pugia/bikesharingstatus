@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Ott 11, 2013 alle 09:22
+-- Generato il: Ott 11, 2013 alle 14:04
 -- Versione del server: 5.5.29
 -- Versione PHP: 5.4.10
 
@@ -57,7 +57,7 @@ CREATE TABLE `city_bikes` (
   PRIMARY KEY (`id_bike`),
   UNIQUE KEY `id_city_2` (`id_city`,`serial`),
   UNIQUE KEY `id_city` (`id_city`,`serial`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -88,6 +88,18 @@ CREATE TABLE `city_issues` (
   PRIMARY KEY (`id_city`,`id_issue`),
   KEY `id_issue` (`id_issue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `city_issues`
+--
+
+INSERT INTO `city_issues` (`id_city`, `id_issue`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6);
 
 -- --------------------------------------------------------
 
@@ -130,8 +142,8 @@ ALTER TABLE `city_bikes`
 -- Limiti per la tabella `city_bikes_issues`
 --
 ALTER TABLE `city_bikes_issues`
-  ADD CONSTRAINT `city_bikes_issues_ibfk_2` FOREIGN KEY (`id_issue`) REFERENCES `issues` (`id_issue`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `city_bikes_issues_ibfk_1` FOREIGN KEY (`id_bike`) REFERENCES `city_bikes` (`id_bike`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `city_bikes_issues_ibfk_1` FOREIGN KEY (`id_bike`) REFERENCES `city_bikes` (`id_bike`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `city_bikes_issues_ibfk_2` FOREIGN KEY (`id_issue`) REFERENCES `issues` (`id_issue`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `city_issues`
