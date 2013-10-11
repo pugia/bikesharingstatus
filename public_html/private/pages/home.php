@@ -69,7 +69,7 @@ $city->loadIssues(1);
 	        		<h2>Consulta</h2>
 	        		<p class="input">
 	        			<label for="c_matricola">Matricola</label>
-	        			<input type="number" name="c_matricola" id="c_matricola" placeholder="Matricola" value="<?php echo (isset($_SESSION['matricola'])) ? $_SESSION['matricola'] : ''; ?>" />
+	        			<input type="tel" name="c_matricola" id="c_matricola" placeholder="Matricola" value="<?php echo (isset($_SESSION['matricola'])) ? $_SESSION['matricola'] : ''; ?>" />
 	        		</p>
 	        		<p class="button">
 	        			<button type="submit">Consulta</button>
@@ -106,7 +106,7 @@ $city->loadIssues(1);
 
 	        		<p class="input">
 	        			<label for="s_matricola">Matricola</label>
-	        			<input type="number" name="s_matricola" id="s_matricola" placeholder="Matricola" value="<?php echo (isset($_SESSION['matricola'])) ? $_SESSION['matricola'] : ''; ?>" />
+	        			<input type="tel" name="s_matricola" id="s_matricola" placeholder="Matricola" value="<?php echo (isset($_SESSION['matricola'])) ? $_SESSION['matricola'] : ''; ?>" />
 	        		</p>
 							
 							<p class="buttons">
@@ -206,6 +206,7 @@ $city->loadIssues(1);
 									if (timer == 0) {
 										clearInterval(intervallo);
 										alert('Tempo scaduto');
+										$('#s_matricola, #c_matricola').val('');
 									}
 									
 								}, 1000);
